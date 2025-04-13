@@ -1,4 +1,141 @@
-# Data Prep
+New Features
+1. Byte Size Parser
+The Byte Size Parser can parse various byte sizes such as KB, MB, and GB. It converts the input string into the canonical byte representation (in bytes).
+
+Syntax:
+Input format: [number][unit]
+
+Example: 10KB, 150MB, 2GB
+
+Example Usage:
+java
+Copy
+Edit
+ByteSize byteSize = new ByteSize("10KB");
+System.out.println(byteSize.getBytes()); // Outputs: 10240 (bytes)
+
+ByteSize byteSizeMB = new ByteSize("2MB");
+System.out.println(byteSizeMB.getBytes()); // Outputs: 2097152 (bytes)
+2. Time Duration Parser
+The Time Duration Parser handles various time formats like milliseconds (ms), seconds (s), minutes (m), and hours (h). It converts the input into the canonical time representation (in nanoseconds).
+
+Syntax:
+Input format: [number][unit]
+
+Example: 150ms, 3s, 1m, 2h
+
+Example Usage:
+java
+Copy
+Edit
+TimeDuration timeDuration = new TimeDuration("150ms");
+System.out.println(timeDuration.getNanoseconds()); // Outputs: 150000000 (nanoseconds)
+
+TimeDuration timeDurationSec = new TimeDuration("3s");
+System.out.println(timeDurationSec.getNanoseconds()); // Outputs: 3000000000 (nanoseconds)
+3. Aggregate Stats Directive
+The Aggregate Stats directive aggregates byte size and time duration values over a dataset. It calculates the total byte size and total time duration, then stores the aggregated results in the specified target columns.
+
+Syntax:
+java
+Copy
+Edit
+aggregate-stats <size-column> <time-column> <size-target-column> <time-target-column>
+Example Usage:
+java
+Copy
+Edit
+// Define a new AggregateStats directive
+AggregateStats aggregateStats = new AggregateStats("sizeColumn", "timeColumn", "aggregatedSize", "aggregatedTime");
+
+// Execute the aggregation
+aggregateStats.execute(executionContext);
+
+// Output aggregated results
+System.out.println("Total Size: " + aggregatedSize); // Outputs the total size in MB
+System.out.println("Total Time: " + aggregatedTime); // Outputs the total time in seconds
+How to Use the Parsers and Directive
+Step 1: Parsing Byte Size
+To parse a byte size:
+
+Instantiate the ByteSize class with a string input in the form of [number][unit].
+
+Call the getBytes() method to retrieve the byte value.
+
+java
+Copy
+Edit
+ByteSize byteSize = new ByteSize("10MB");
+long bytes = byteSize.getBytes();
+System.out.println("10MB = " + bytes + " bytes");
+Step 2: Parsing Time Duration
+To parse a time duration:
+
+Instantiate the TimeDuration class with a string input in the form of [number][unit].
+
+Call the getNanoseconds() method to retrieve the time value in nanoseconds.
+
+java
+Copy
+Edit
+TimeDuration timeDuration = new TimeDuration("2s");
+long nanoseconds = timeDuration.getNanoseconds();
+System.out.println("2 seconds = " + nanoseconds + " nanoseconds");
+Step 3: Using the Aggregate Stats Directive
+Create an instance of AggregateStats with the required column names.
+
+Execute the directive using the execute() method on an ExecutionContext.
+
+The results will be stored in the specified target columns.
+
+java
+Copy
+Edit
+AggregateStats aggregateStats = new AggregateStats("sizeColumn", "timeColumn", "aggregatedSize", "aggregatedTime");
+aggregateStats.execute(context);
+
+// Access aggregated results
+System.out.println("Total Size: " + aggregatedSize + " MB");
+System.out.println("Total Time: " + aggregatedTime + " seconds");
+Changes Made
+Added Byte Size Parser for parsing KB, MB, and GB.
+
+Added Time Duration Parser for parsing ms, s, m, and h.
+
+Introduced Aggregate Stats Directive to aggregate byte sizes and time durations in a dataset.
+
+Testing
+To test the new functionality:
+
+Add unit tests for ByteSize and TimeDuration classes to validate the parsing and conversion logic.
+
+Ensure the AggregateStats directive correctly computes and stores the aggregated values.
+
+Example unit tests are included for both parsers and the directive:
+
+java
+Copy
+Edit
+@Test
+public void testByteSizeParsing() {
+    ByteSize byteSize = new ByteSize("10KB");
+    Assert.assertEquals(10240, byteSize.getBytes());
+}
+
+@Test
+public void testTimeDurationParsing() {
+    TimeDuration timeDuration = new TimeDuration("150ms");
+    Assert.assertEquals(150000000, timeDuration.getNanoseconds());
+}
+
+@Test
+public void testAggregateStats() {
+    // Create mock rows with byte size and time duration
+    // Run the aggregate-stats directive
+    // Assert the aggregate values
+}
+Conclusion
+With these new parsers and the aggregation directive, you can now handle byte size and time duration values more effectively and perform aggregation operations in your data pipelines. Make sure to update your projects with the latest version to take advantage of these features.# Data Prep
 
 ![cm-available](https://cdap-users.herokuapp.com/assets/cm-available.svg)
 ![cdap-transform](https://cdap-users.herokuapp.com/assets/cdap-transform.svg)
